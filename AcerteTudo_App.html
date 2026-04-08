@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#0a0e1a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="AcerteTudo"/>
+<title>AcerteTudo — Questões e Simulados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0e1a; --bg2:#0f1424; --bg3:#141928; --card:#181e30;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+  --text:#e8eeff; --text2:#7a8ab0; --text3:#3d4d6a;
+  --blue:#4f8ef7; --blue2:#2563eb;
+  --green:#22c77a; --red:#f05252; --amber:#f0a500; --purple:#a78bfa;
+  --display:'Syne',sans-serif; --body:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100dvh;max-width:480px;margin:0 auto;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;position:relative;overflow:hidden}
+.login-wrap::before{content:'';position:absolute;top:-20%;left:-20%;width:140%;height:140%;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(79,142,247,.12),transparent 70%);pointer-events:none}
+.login-logo{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-2px;margin-bottom:4px}
+.login-logo span{color:var(--blue)}
+.login-tagline{font-size:14px;color:var(--text2);margin-bottom:48px;line-height:1.5}
+.login-card{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:28px;width:100%;max-width:360px;margin-bottom:16px}
+.login-card h3{font-family:var(--display);font-size:18px;font-weight:700;margin-bottom:20px;text-align:left}
+.form-group{margin-bottom:14px;text-align:left}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.form-inp{width:100%;height:44px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;font-family:var(--body);padding:0 14px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.form-inp:focus{border-color:var(--blue)}
+.form-inp::placeholder{color:var(--text3)}
+.btn{width:100%;height:46px;border-radius:10px;font-size:15px;font-weight:600;font-family:var(--body);border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue2);color:#fff}
+.btn-blue:hover{background:#1d4ed8}
+.btn-google{background:#fff;color:#333;border:1px solid #ddd;margin-top:10px}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.25);color:var(--text)}
+.btn-green{background:var(--green);color:#0a0e1a}
+.btn-green:hover{background:#1de082}
+.btn-red{background:var(--red);color:#fff}
+.btn-sm{height:36px;font-size:13px;padding:0 16px;width:auto;border-radius:8px}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;font-size:12px;color:var(--text3)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-switch{font-size:13px;color:var(--text3);margin-top:8px}
+.login-switch a{color:var(--blue);cursor:pointer;text-decoration:none}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(10,14,26,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{font-family:var(--display);font-size:18px;font-weight:800;letter-spacing:-.5px}
+.topbar-logo span{color:var(--blue)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--border2);overflow:hidden;cursor:pointer;flex-shrink:0;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border2);display:flex;z-index:50;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;cursor:pointer;border:none;background:transparent;color:var(--text3);font-size:10px;font-weight:600;font-family:var(--body);transition:color .2s;letter-spacing:.02em;text-transform:uppercase}
+.nav-item .ni{font-size:20px}
+.nav-item.active{color:var(--blue)}
+
+/* ── DASHBOARD ── */
+.page{padding:20px}
+.page-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.stat-card .sl{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.stat-card .sv{font-size:28px;font-weight:700;font-family:var(--display);letter-spacing:-1px}
+.stat-card .ss{font-size:12px;color:var(--text2);margin-top:2px}
+.sv.blue{color:var(--blue)} .sv.green{color:var(--green)} .sv.amber{color:var(--amber)} .sv.red{color:var(--red)}
+.sec-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;margin-top:20px}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qa-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:border-color .2s,transform .2s;display:flex;flex-direction:column;gap:8px}
+.qa-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.qa-icon{font-size:28px}
+.qa-title{font-size:14px;font-weight:600;color:var(--text)}
+.qa-desc{font-size:12px;color:var(--text2)}
+.recent-list{display:flex;flex-direction:column;gap:8px}
+.recent-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px}
+.ri-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ri-info{flex:1;min-width:0}
+.ri-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ri-meta{font-size:11px;color:var(--text3);margin-top:1px}
+.ri-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px}
+.rb-green{background:rgba(34,199,122,.15);color:var(--green)}
+.rb-red{background:rgba(240,82,82,.15);color:var(--red)}
+
+/* ── QUESTÕES ── */
+.filter-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--body);transition:all .15s;white-space:nowrap}
+.filter-chip.active{background:var(--blue2);color:#fff;border-color:var(--blue2)}
+.q-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:border-color .2s}
+.q-card:hover{border-color:var(--border2)}
+.q-card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.q-banca{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(79,142,247,.15);color:var(--blue);text-transform:uppercase;letter-spacing:.04em}
+.q-materia{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(167,139,250,.15);color:var(--purple)}
+.q-assunto{font-size:10px;color:var(--text3);margin-left:auto}
+.q-enunciado{font-size:13px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.q-footer{display:flex;align-items:center;gap:8px;margin-top:12px}
+.fab-add{position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blue2);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(37,99,235,.4);z-index:40;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.fab-add:hover{transform:scale(1.08)}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty-state .big{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.6}
+
+/* ── RESOLVER QUESTÃO ── */
+.resolve-wrap{padding:20px}
+.q-header{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+.q-num{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:15px;line-height:1.7;color:var(--text)}
+.alts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.alt{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s}
+.alt:hover{border-color:var(--border2)}
+.alt.selected{border-color:var(--blue);background:rgba(79,142,247,.08)}
+.alt.correct{border-color:var(--green);background:rgba(34,199,122,.1)}
+.alt.wrong{border-color:var(--red);background:rgba(240,82,82,.1)}
+.alt-letter{width:30px;height:30px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;transition:all .2s}
+.alt.selected .alt-letter{background:var(--blue);border-color:var(--blue);color:#fff}
+.alt.correct .alt-letter{background:var(--green);border-color:var(--green);color:#0a0e1a}
+.alt.wrong .alt-letter{background:var(--red);border-color:var(--red);color:#fff}
+.alt-text{font-size:14px;line-height:1.5;color:var(--text2);flex:1}
+.gabarito-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;display:none}
+.gabarito-box.show{display:block}
+.gab-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gab-icon{font-size:24px}
+.gab-title{font-size:16px;font-weight:700;font-family:var(--display)}
+.gab-exp{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ── FORMULÁRIO QUESTÃO ── */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end}
+.modal-backdrop.open{display:flex}
+.modal-sheet{background:var(--bg2);border-top:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px 20px 36px;width:100%;max-height:90dvh;overflow-y:auto;animation:sheetUp .3s ease}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:var(--display);font-size:18px;font-weight:700;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.close-btn{width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+textarea.form-inp{height:90px;padding:12px 14px;resize:none;line-height:1.5}
+.alt-input-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.alt-lbl{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:var(--text2)}
+.alt-lbl.correct-lbl{background:var(--green);border-color:var(--green);color:#0a0e1a}
+.gabarito-selector{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.gab-opt{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:transparent;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--body);transition:all .15s}
+.gab-opt.selected{background:var(--green);border-color:var(--green);color:#0a0e1a}
+select.form-inp{cursor:pointer}
+
+/* ── SIMULADO ── */
+.simul-config{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.simul-running{padding:20px}
+.timer-bar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:60px;z-index:30}
+.timer-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--text)}
+.timer-val.warn{color:var(--amber)} .timer-val.danger{color:var(--red)}
+.simul-progress{font-size:13px;color:var(--text2)}
+.simul-q-wrap{margin-bottom:16px}
+.simul-nav{display:flex;gap:10px;margin-top:16px}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center}
+.result-score{font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-2px;margin-bottom:4px}
+.result-label{font-size:14px;color:var(--text2);margin-bottom:20px}
+.result-bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.res-bar{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+.res-bar-val{font-size:22px;font-weight:700;font-family:var(--display)}
+.res-bar-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── DESEMPENHO ── */
+.perf-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px}
+.perf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.perf-materia{font-size:14px;font-weight:600;color:var(--text)}
+.perf-pct{font-size:14px;font-weight:700;color:var(--green)}
+.perf-pct.med{color:var(--amber)} .perf-pct.low{color:var(--red)}
+.perf-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.perf-fill{height:100%;border-radius:3px;transition:width .6s}
+.perf-sub{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:6px}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:10px 18px;font-size:13px;font-weight:500;color:var(--text);z-index:999;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+.toast.warn{border-color:var(--amber);color:var(--amber)}
+
+/* ── SPINNER ── */
+.loading-screen{min-height:100dvh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen active">
+  <div class="loading-screen">
+    <div style="font-family:var(--display);font-size:32px;font-weight:800;letter-spacing:-1px">Acerte<span style="color:var(--blue)">Tudo</span></div>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-auth" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo">Acerte<span>Tudo</span></div>
+    <div class="login-tagline">Questões, simulados e gabarito<br/>na palma da mão.</div>
+
+    <div class="login-card" id="card-login">
+      <h3>Entrar na conta</h3>
+      <div class="form-group"><label>E-mail</label><input class="form-inp" id="login-email" type="email" placeholder="seu@email.com"/></div>
+      <div class="form-group"><label>Senha</label><input class="form-inp" id="login-pass" type="password" placeholder="••••••••"/></div>
+      <button class="btn btn-blue" onclick="loginEmail()">Entrar</button>
+      <div class="divider">ou</div>
+      <button class="btn btn-google" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4c-7.7 0-14.3 4.5-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.4-5.1l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3-11.3-7.4l-6.5 5C9.7 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.2 5.2C40.7 35.5 44 30.2 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
+        Entrar com Google
+      </button>
+      <div class="login-switch">Não tem conta? <a onclick="showRegister()">Cadastre-se</a></div>
+    </div>
+
+    <div class="login-card" id="card-register" style="display:none">
+      <h3>Criar conta</h3>
+      <div class="form-group"><label>Nome completo</label><input class="form-inp" id="reg-name" type="text" placeholder="Seu nome"/></div>
+      <div class="form-group"><label>E-mail</label><input class="form-inp" id="reg-email" type="email" placeholder="seu@email.com"/></div>
+      <div class="form-group"><label>Senha</label><input class="form-inp" id="reg-pass" type="password" placeholder="mínimo 6 caracteres"/></div>
+      <button class="btn btn-blue" onclick="registerEmail()">Criar conta</button>
+      <div class="login-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app" class="screen">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">Acerte<span>Tudo</span></div>
+    <div class="topbar-right">
+      <div class="avatar" id="user-avatar" onclick="showLogoutConfirm()"></div>
+    </div>
+  </div>
+
+  <!-- PAGES -->
+  <div id="page-home" class="page screen active">
+    <div class="page-title" id="home-greeting">Olá! 👋</div>
+    <div class="page-sub">Pronto para estudar hoje?</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="sl">Questões</div><div class="sv blue" id="stat-total">0</div><div class="ss">cadastradas</div></div>
+      <div class="stat-card"><div class="sl">Respondidas</div><div class="sv green" id="stat-resp">0</div><div class="ss">no total</div></div>
+      <div class="stat-card"><div class="sl">Taxa de acerto</div><div class="sv amber" id="stat-acerto">0%</div><div class="ss">geral</div></div>
+      <div class="stat-card"><div class="sl">Simulados</div><div class="sv" id="stat-sims">0</div><div class="ss">realizados</div></div>
+    </div>
+    <div class="sec-title">Ações rápidas</div>
+    <div class="quick-actions">
+      <div class="qa-card" onclick="goPage('questoes')"><div class="qa-icon">📚</div><div class="qa-title">Resolver questão</div><div class="qa-desc">Praticar por matéria ou assunto</div></div>
+      <div class="qa-card" onclick="goPage('simulado')"><div class="qa-icon">⏱️</div><div class="qa-title">Novo simulado</div><div class="qa-desc">Prova cronometrada</div></div>
+      <div class="qa-card" onclick="openAddModal()"><div class="qa-icon">➕</div><div class="qa-title">Adicionar questão</div><div class="qa-desc">Cadastrar nova questão</div></div>
+      <div class="qa-card" onclick="goPage('desempenho')"><div class="qa-icon">📊</div><div class="qa-title">Meu desempenho</div><div class="qa-desc">Ver acertos por matéria</div></div>
+    </div>
+    <div class="sec-title">Últimas questões</div>
+    <div class="recent-list" id="recent-list">
+      <div class="empty-state"><div class="big">📖</div><p>Nenhuma questão cadastrada ainda.<br/>Adicione a primeira!</p></div>
+    </div>
+  </div>
+
+  <div id="page-questoes" class="page screen">
+    <div class="page-title">Questões</div>
+    <div class="page-sub">Filtre e resolva por matéria</div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-chip active" data-filter="todas" onclick="filterQ(this)">Todas</button>
+    </div>
+    <div class="q-list" id="q-list">
+      <div class="empty-state"><div class="big">📭</div><p>Nenhuma questão ainda.<br/>Adicione usando o botão +</p></div>
+    </div>
+    <button class="fab-add" onclick="openAddModal()">+</button>
+  </div>
+
+  <div id="page-simulado" class="page screen">
+    <div id="simul-config-view">
+      <div class="page" style="padding-top:20px">
+        <div class="page-title">Simulado</div>
+        <div class="page-sub">Configure e inicie seu simulado</div>
+        <div class="simul-config">
+          <div class="form-group"><label>Matéria (ou todas)</label>
+            <select class="form-inp" id="sim-materia"><option value="todas">Todas as matérias</option></select>
+          </div>
+          <div class="form-group"><label>Quantidade de questões</label>
+            <select class="form-inp" id="sim-qtd">
+              <option value="5">5 questões</option>
+              <option value="10" selected>10 questões</option>
+              <option value="20">20 questões</option>
+              <option value="30">30 questões</option>
+              <option value="50">50 questões</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tempo por questão</label>
+            <select class="form-inp" id="sim-tempo">
+              <option value="0">Sem limite de tempo</option>
+              <option value="60">1 minuto por questão</option>
+              <option value="90">1:30 por questão</option>
+              <option value="120" selected>2 minutos por questão</option>
+              <option value="180">3 minutos por questão</option>
+            </select>
+          </div>
+          <button class="btn btn-blue" onclick="startSimulado()" style="margin-top:8px">Iniciar simulado →</button>
+        </div>
+        <div class="sec-title">Histórico de simulados</div>
+        <div id="sim-history"></div>
+      </div>
+    </div>
+    <div id="simul-running-view" style="display:none">
+      <div class="simul-running">
+        <div class="timer-bar">
+          <div><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Tempo restante</div><div class="timer-val" id="timer-display">--:--</div></div>
+          <div class="simul-progress" id="simul-progress">Questão 1 de 10</div>
+          <button class="btn btn-ghost btn-sm" onclick="confirmEndSimulado()">Encerrar</button>
+        </div>
+        <div class="simul-q-wrap" id="simul-q-wrap"></div>
+        <div class="simul-nav">
+          <button class="btn btn-ghost" id="sim-prev-btn" onclick="simulPrev()" style="flex:1">← Anterior</button>
+          <button class="btn btn-blue" id="sim-next-btn" onclick="simulNext()" style="flex:1">Próxima →</button>
+        </div>
+      </div>
+    </div>
+    <div id="simul-result-view" style="display:none">
+      <div class="page" style="padding-top:20px">
+        <div class="page-title">Resultado</div>
+        <div class="result-card">
+          <div class="result-score" id="result-score">0%</div>
+          <div class="result-label" id="result-label">Calculando...</div>
+          <div class="result-bars">
+            <div class="res-bar"><div class="res-bar-val green" id="res-acertos">0</div><div class="res-bar-lbl">Acertos</div></div>
+            <div class="res-bar"><div class="res-bar-val red" id="res-erros">0</div><div class="res-bar-lbl">Erros</div></div>
+            <div class="res-bar"><div class="res-bar-val" id="res-total">0</div><div class="res-bar-lbl">Total</div></div>
+            <div class="res-bar"><div class="res-bar-val amber" id="res-tempo">--</div><div class="res-bar-lbl">Tempo</div></div>
+          </div>
+        </div>
+        <div class="sec-title">Gabarito do simulado</div>
+        <div id="simul-gabarito-list"></div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn btn-ghost" onclick="goPage('simulado')" style="flex:1">Novo simulado</button>
+          <button class="btn btn-blue" onclick="goPage('home')" style="flex:1">Ir para início</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-desempenho" class="page screen">
+    <div class="page-title">Desempenho</div>
+    <div class="page-sub">Seus acertos por matéria</div>
+    <div id="perf-list"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="goPage('home')"><span class="ni">🏠</span>Início</button>
+    <button class="nav-item" data-page="questoes" onclick="goPage('questoes')"><span class="ni">📚</span>Questões</button>
+    <button class="nav-item" data-page="simulado" onclick="goPage('simulado')"><span class="ni">⏱️</span>Simulado</button>
+    <button class="nav-item" data-page="desempenho" onclick="goPage('desempenho')"><span class="ni">📊</span>Desempenho</button>
+  </div>
+</div>
+
+<!-- RESOLVER QUESTÃO MODAL -->
+<div class="modal-backdrop" id="resolve-modal">
+  <div class="modal-sheet" style="max-height:95dvh" onclick="event.stopPropagation()">
+    <div class="modal-title">
+      <span id="resolve-title">Questão</span>
+      <button class="close-btn" onclick="closeResolveModal()">✕</button>
+    </div>
+    <div id="resolve-content"></div>
+  </div>
+</div>
+
+<!-- ADD/EDIT QUESTÃO MODAL -->
+<div class="modal-backdrop" id="add-modal">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-title">
+      <span id="add-modal-title">Nova questão</span>
+      <button class="close-btn" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="form-group"><label>Banca</label><input class="form-inp" id="q-banca" placeholder="Ex: CESPE, FCC, VUNESP"/></div>
+    <div class="form-group"><label>Matéria</label><input class="form-inp" id="q-materia" placeholder="Ex: Português, Matemática"/></div>
+    <div class="form-group"><label>Assunto</label><input class="form-inp" id="q-assunto" placeholder="Ex: Interpretação de texto"/></div>
+    <div class="form-group"><label>Nível</label>
+      <select class="form-inp" id="q-nivel">
+        <option value="Fácil">Fácil</option>
+        <option value="Médio" selected>Médio</option>
+        <option value="Difícil">Difícil</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Enunciado da questão</label><textarea class="form-inp" id="q-enunciado" placeholder="Digite o enunciado completo da questão..."></textarea></div>
+    <div class="form-group">
+      <label>Alternativas</label>
+      <div class="alt-input-row"><div class="alt-lbl" id="lbl-A">A</div><input class="form-inp" id="alt-A" placeholder="Alternativa A"/></div>
+      <div class="alt-input-row"><div class="alt-lbl" id="lbl-B">B</div><input class="form-inp" id="alt-B" placeholder="Alternativa B"/></div>
+      <div class="alt-input-row"><div class="alt-lbl" id="lbl-C">C</div><input class="form-inp" id="alt-C" placeholder="Alternativa C"/></div>
+      <div class="alt-input-row"><div class="alt-lbl" id="lbl-D">D</div><input class="form-inp" id="alt-D" placeholder="Alternativa D"/></div>
+      <div class="alt-input-row"><div class="alt-lbl" id="lbl-E">E</div><input class="form-inp" id="alt-E" placeholder="Alternativa E"/></div>
+    </div>
+    <div class="form-group">
+      <label>Gabarito (resposta correta)</label>
+      <div class="gabarito-selector">
+        <button class="gab-opt" data-g="A" onclick="selectGab('A')">A</button>
+        <button class="gab-opt" data-g="B" onclick="selectGab('B')">B</button>
+        <button class="gab-opt" data-g="C" onclick="selectGab('C')">C</button>
+        <button class="gab-opt" data-g="D" onclick="selectGab('D')">D</button>
+        <button class="gab-opt" data-g="E" onclick="selectGab('E')">E</button>
+      </div>
+    </div>
+    <div class="form-group"><label>Explicação do gabarito (opcional)</label><textarea class="form-inp" id="q-explicacao" placeholder="Explique por que a resposta está correta..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeAddModal()" style="flex:1">Cancelar</button>
+      <button class="btn btn-blue" onclick="saveQuestao()" style="flex:1" id="save-q-btn">Salvar questão</button>
+    </div>
+    <div id="edit-del-row" style="display:none;margin-top:10px">
+      <button class="btn btn-red" onclick="deleteQuestao()" style="width:100%">Excluir questão</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider,
+         createUserWithEmailAndPassword,
+         signInWithEmailAndPassword,
+         signInWithPopup, signOut,
+         updateProfile,
+         onAuthStateChanged }                      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc,
+         getDocs, deleteDoc, updateDoc,
+         doc, query, where, orderBy,
+         onSnapshot, setDoc, getDoc,
+         serverTimestamp, increment }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── CONFIG — substitua pelos seus dados do Firebase ──────────────
+const firebaseConfig = {
+  apiKey:            "COLE_SUA_API_KEY_AQUI",
+  authDomain:        "COLE_SEU_AUTH_DOMAIN_AQUI",
+  projectId:         "COLE_SEU_PROJECT_ID_AQUI",
+  storageBucket:     "COLE_SEU_STORAGE_BUCKET_AQUI",
+  messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID_AQUI",
+  appId:             "COLE_SEU_APP_ID_AQUI"
+};
+// ─────────────────────────────────────────────────────────────────
+
+const fireApp = initializeApp(firebaseConfig);
+const auth    = getAuth(fireApp);
+const db      = getFirestore(fireApp);
+const gProvider = new GoogleAuthProvider();
+
+// ── STATE ────────────────────────────────────────────────────────
+let currentUser = null;
+let questoes    = [];
+let historico   = [];
+let simulHistory= [];
+let editingId   = null;
+let gabSelected = null;
+let simulQuestoes = [];
+let simulRespostas = {};
+let simulCurrent  = 0;
+let simulTimer    = null;
+let simulSeconds  = 0;
+let simulMaxSec   = 0;
+let simulStartTime= null;
+let toastTimer;
+let unsubQ = null;
+
+// ── UTILS ────────────────────────────────────────────────────────
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  clearTimeout(toastTimer);
+  setTimeout(() => t.classList.add('show'), 10);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+function fmt2(n) { return String(Math.floor(n/60)).padStart(2,'0') + ':' + String(n%60).padStart(2,'0'); }
+function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────
+window.showRegister = () => { document.getElementById('card-login').style.display='none'; document.getElementById('card-register').style.display='block'; };
+window.showLogin    = () => { document.getElementById('card-login').style.display='block'; document.getElementById('card-register').style.display='none'; };
+
+window.loginEmail = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) { showToast('Preencha e-mail e senha', 'error'); return; }
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch(e) { showToast('E-mail ou senha incorretos', 'error'); }
+};
+
+window.registerEmail = async () => {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) { showToast('Preencha todos os campos', 'error'); return; }
+  if (pass.length < 6) { showToast('Senha mínimo 6 caracteres', 'error'); return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'usuarios', cred.user.uid), { nome: name, email, criadoEm: serverTimestamp(), totalRespondidas: 0, totalAcertos: 0 });
+  } catch(e) { showToast('Erro ao criar conta: ' + e.message, 'error'); }
+};
+
+window.loginGoogle = async () => {
+  try { await signInWithPopup(auth, gProvider); }
+  catch(e) { showToast('Erro no login Google', 'error'); }
+};
+
+window.showLogoutConfirm = () => { if (confirm('Deseja sair da conta?')) { if(unsubQ) unsubQ(); signOut(auth); } };
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    currentUser = user;
+    showScreen('screen-app');
+    updateAvatar(user);
+    loadGreeting(user);
+    startListening();
+    loadStats();
+    loadSimHistory();
+  } else {
+    currentUser = null;
+    showScreen('screen-auth');
+  }
+});
+
+function updateAvatar(user) {
+  const el = document.getElementById('user-avatar');
+  if (user.photoURL) el.innerHTML = `<img src="${user.photoURL}"/>`;
+  else el.textContent = (user.displayName || user.email || 'U')[0].toUpperCase();
+}
+function loadGreeting(user) {
+  const name = user.displayName ? user.displayName.split(' ')[0] : 'Aluno';
+  const h = new Date().getHours();
+  const gr = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  document.getElementById('home-greeting').textContent = `${gr}, ${name}! 👋`;
+}
+
+// ── FIRESTORE LISTENER ────────────────────────────────────────────
+function startListening() {
+  if (!currentUser) return;
+  const q = query(collection(db,'questoes'), where('uid','==',currentUser.uid), orderBy('criadoEm','desc'));
+  unsubQ = onSnapshot(q, snap => {
+    questoes = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderQuestoes();
+    renderRecent();
+    renderFilterBar();
+    renderSimMaterias();
+    renderPerfCard();
+    document.getElementById('stat-total').textContent = questoes.length;
+  });
+}
+
+async function loadStats() {
+  if (!currentUser) return;
+  try {
+    const snap = await getDoc(doc(db,'usuarios',currentUser.uid));
+    if (snap.exists()) {
+      const d = snap.data();
+      const resp = d.totalRespondidas || 0;
+      const acertos = d.totalAcertos || 0;
+      document.getElementById('stat-resp').textContent = resp;
+      document.getElementById('stat-acerto').textContent = resp > 0 ? Math.round(acertos/resp*100)+'%' : '0%';
+    }
+  } catch(e) {}
+}
+
+async function loadSimHistory() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db,'simulados'), where('uid','==',currentUser.uid), orderBy('data','desc'));
+    const snap = await getDocs(q);
+    simulHistory = snap.docs.map(d => ({id:d.id,...d.data()}));
+    document.getElementById('stat-sims').textContent = simulHistory.length;
+    renderSimHistory();
+  } catch(e) {}
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+window.goPage = (name) => {
+  document.querySelectorAll('#screen-app .page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === name);
+  });
+  if (name === 'simulado') {
+    document.getElementById('simul-config-view').style.display = 'block';
+    document.getElementById('simul-running-view').style.display = 'none';
+    document.getElementById('simul-result-view').style.display = 'none';
+  }
+};
+
+// ── QUESTÕES ─────────────────────────────────────────────────────
+function renderFilterBar() {
+  const materias = [...new Set(questoes.map(q => q.materia).filter(Boolean))];
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = `<button class="filter-chip active" data-filter="todas" onclick="filterQ(this)">Todas</button>`;
+  materias.forEach(m => {
+    bar.innerHTML += `<button class="filter-chip" data-filter="${m}" onclick="filterQ(this)">${m}</button>`;
+  });
+}
+
+window.filterQ = (btn) => {
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuestoes(btn.dataset.filter);
+};
+
+function renderQuestoes(filtro = 'todas') {
+  const list = document.getElementById('q-list');
+  let filtered = filtro === 'todas' ? questoes : questoes.filter(q => q.materia === filtro);
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><div class="big">📭</div><p>Nenhuma questão encontrada.</p></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(q => `
+    <div class="q-card" onclick="openResolveModal('${q.id}')">
+      <div class="q-card-top">
+        ${q.banca ? `<span class="q-banca">${q.banca}</span>` : ''}
+        ${q.materia ? `<span class="q-materia">${q.materia}</span>` : ''}
+        <span class="q-assunto">${q.assunto || ''}</span>
+      </div>
+      <div class="q-enunciado">${q.enunciado}</div>
+      <div class="q-footer">
+        <span style="font-size:10px;color:var(--text3)">${q.nivel || 'Médio'}</span>
+        <span style="margin-left:auto;font-size:11px;cursor:pointer;color:var(--text2)" onclick="event.stopPropagation();openEditModal('${q.id}')">✏️ Editar</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderRecent() {
+  const list = document.getElementById('recent-list');
+  const rec  = questoes.slice(0, 5);
+  if (!rec.length) {
+    list.innerHTML = `<div class="empty-state"><div class="big">📖</div><p>Nenhuma questão ainda.<br/>Adicione a primeira!</p></div>`;
+    return;
+  }
+  list.innerHTML = rec.map(q => `
+    <div class="recent-item" onclick="openResolveModal('${q.id}')" style="cursor:pointer">
+      <div class="ri-icon" style="background:rgba(79,142,247,.15)">📄</div>
+      <div class="ri-info">
+        <div class="ri-name">${q.enunciado.substring(0,60)}...</div>
+        <div class="ri-meta">${q.materia || '—'} · ${q.assunto || '—'} · ${q.banca || '—'}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── RESOLVER QUESTÃO ─────────────────────────────────────────────
+window.openResolveModal = (id) => {
+  const q = questoes.find(x => x.id === id);
+  if (!q) return;
+  document.getElementById('resolve-title').textContent = q.materia + (q.assunto ? ' · ' + q.assunto : '');
+  document.getElementById('resolve-modal').classList.add('open');
+  renderResolveContent(q, null);
+};
+window.closeResolveModal = () => document.getElementById('resolve-modal').classList.remove('open');
+
+function renderResolveContent(q, respondida) {
+  const letras = ['A','B','C','D','E'];
+  const alts = letras.map(l => ({l, text: q['alt'+l]})).filter(a => a.text);
+  let html = `
+    <div class="q-header">
+      <div class="q-num">${q.banca ? q.banca+' · ' : ''}${q.materia || ''} · ${q.nivel || 'Médio'}</div>
+      <div class="q-text">${q.enunciado}</div>
+    </div>
+    <div class="alts" id="alts-container">
+      ${alts.map(a => `
+        <div class="alt ${respondida ? (a.l===q.gabarito?'correct':(a.l===respondida?'wrong':'')) : ''}"
+             id="alt-${a.l}"
+             onclick="${respondida ? '' : `responder('${q.id}','${a.l}')`}"
+             style="cursor:${respondida?'default':'pointer'}">
+          <div class="alt-letter">${a.l}</div>
+          <div class="alt-text">${a.text}</div>
+        </div>`).join('')}
+    </div>
+    <div class="gabarito-box ${respondida ? 'show' : ''}" id="gabarito-box">
+      <div class="gab-header">
+        <div class="gab-icon">${respondida === q.gabarito ? '✅' : '❌'}</div>
+        <div class="gab-title" style="color:${respondida === q.gabarito ? 'var(--green)' : 'var(--red)'}">
+          ${respondida === q.gabarito ? 'Resposta correta!' : `Resposta errada! Gabarito: ${q.gabarito}`}
+        </div>
+      </div>
+      ${q.explicacao ? `<div class="gab-exp">${q.explicacao}</div>` : ''}
+    </div>
+    ${respondida ? `<button class="btn btn-ghost" onclick="closeResolveModal()" style="margin-top:8px">Fechar</button>` : ''}`;
+  document.getElementById('resolve-content').innerHTML = html;
+}
+
+window.responder = async (qId, letra) => {
+  const q = questoes.find(x => x.id === qId);
+  if (!q) return;
+  const acertou = letra === q.gabarito;
+  renderResolveContent(q, letra);
+  // salvar histórico
+  if (currentUser) {
+    try {
+      await addDoc(collection(db,'historico'), { uid: currentUser.uid, qId, resposta: letra, gabarito: q.gabarito, acertou, materia: q.materia || '', data: new Date().toISOString() });
+      await setDoc(doc(db,'usuarios',currentUser.uid), { totalRespondidas: increment(1), totalAcertos: increment(acertou?1:0) }, { merge: true });
+      loadStats();
+      renderPerfCard();
+    } catch(e) {}
+  }
+  showToast(acertou ? '✅ Correto!' : `❌ Errado! Gabarito: ${q.gabarito}`, acertou ? 'ok' : 'error');
+};
+
+// ── DESEMPENHO ────────────────────────────────────────────────────
+async function renderPerfCard() {
+  if (!currentUser) return;
+  const list = document.getElementById('perf-list');
+  try {
+    const q = query(collection(db,'historico'), where('uid','==',currentUser.uid));
+    const snap = await getDocs(q);
+    const hist = snap.docs.map(d => d.data());
+    if (!hist.length) { list.innerHTML = `<div class="empty-state"><div class="big">📊</div><p>Responda questões para ver seu desempenho.</p></div>`; return; }
+    const materias = {};
+    hist.forEach(h => {
+      const m = h.materia || 'Sem matéria';
+      if (!materias[m]) materias[m] = { total: 0, acertos: 0 };
+      materias[m].total++;
+      if (h.acertou) materias[m].acertos++;
+    });
+    list.innerHTML = Object.entries(materias).sort((a,b)=>b[1].total-a[1].total).map(([m, d]) => {
+      const pct = Math.round(d.acertos/d.total*100);
+      const cls = pct >= 70 ? '' : pct >= 50 ? 'med' : 'low';
+      return `<div class="perf-card">
+        <div class="perf-header"><div class="perf-materia">${m}</div><div class="perf-pct ${cls}">${pct}%</div></div>
+        <div class="perf-track"><div class="perf-fill" style="width:${pct}%;background:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}"></div></div>
+        <div class="perf-sub"><span>${d.acertos} acertos</span><span>${d.total} questões</span></div>
+      </div>`;
+    }).join('');
+  } catch(e) { list.innerHTML = `<div class="empty-state"><p>Erro ao carregar desempenho.</p></div>`; }
+}
+
+// ── ADD / EDIT QUESTÃO ────────────────────────────────────────────
+window.openAddModal = () => {
+  editingId = null; gabSelected = null;
+  document.getElementById('add-modal-title').textContent = 'Nova questão';
+  document.getElementById('save-q-btn').textContent = 'Salvar questão';
+  document.getElementById('edit-del-row').style.display = 'none';
+  ['banca','materia','assunto','enunciado','explicacao'].forEach(f => document.getElementById('q-'+f).value = '');
+  ['A','B','C','D','E'].forEach(l => { document.getElementById('alt-'+l).value = ''; document.getElementById('lbl-'+l).classList.remove('correct-lbl'); });
+  document.querySelectorAll('.gab-opt').forEach(b => b.classList.remove('selected'));
+  document.getElementById('q-nivel').value = 'Médio';
+  document.getElementById('add-modal').classList.add('open');
+};
+
+window.openEditModal = (id) => {
+  const q = questoes.find(x => x.id === id);
+  if (!q) return;
+  editingId = id; gabSelected = q.gabarito;
+  document.getElementById('add-modal-title').textContent = 'Editar questão';
+  document.getElementById('save-q-btn').textContent = 'Salvar alterações';
+  document.getElementById('edit-del-row').style.display = 'block';
+  ['banca','materia','assunto','enunciado','explicacao'].forEach(f => document.getElementById('q-'+f).value = q[f] || '');
+  ['A','B','C','D','E'].forEach(l => {
+    document.getElementById('alt-'+l).value = q['alt'+l] || '';
+    document.getElementById('lbl-'+l).classList.toggle('correct-lbl', l === q.gabarito);
+  });
+  document.querySelectorAll('.gab-opt').forEach(b => b.classList.toggle('selected', b.dataset.g === q.gabarito));
+  document.getElementById('q-nivel').value = q.nivel || 'Médio';
+  document.getElementById('add-modal').classList.add('open');
+};
+
+window.closeAddModal = () => document.getElementById('add-modal').classList.remove('open');
+
+window.selectGab = (l) => {
+  gabSelected = l;
+  document.querySelectorAll('.gab-opt').forEach(b => b.classList.toggle('selected', b.dataset.g === l));
+  ['A','B','C','D','E'].forEach(x => document.getElementById('lbl-'+x).classList.toggle('correct-lbl', x === l));
+};
+
+window.saveQuestao = async () => {
+  const enunciado = document.getElementById('q-enunciado').value.trim();
+  const altA = document.getElementById('alt-A').value.trim();
+  const altB = document.getElementById('alt-B').value.trim();
+  if (!enunciado || !altA || !altB) { showToast('Preencha enunciado e ao menos A e B', 'error'); return; }
+  if (!gabSelected) { showToast('Selecione o gabarito', 'error'); return; }
+  const data = {
+    uid: currentUser.uid,
+    banca:    document.getElementById('q-banca').value.trim(),
+    materia:  document.getElementById('q-materia').value.trim(),
+    assunto:  document.getElementById('q-assunto').value.trim(),
+    nivel:    document.getElementById('q-nivel').value,
+    enunciado,
+    altA, altB,
+    altC: document.getElementById('alt-C').value.trim(),
+    altD: document.getElementById('alt-D').value.trim(),
+    altE: document.getElementById('alt-E').value.trim(),
+    gabarito:   gabSelected,
+    explicacao: document.getElementById('q-explicacao').value.trim(),
+    criadoEm:   serverTimestamp(),
+  };
+  try {
+    if (editingId) { await updateDoc(doc(db,'questoes',editingId), data); showToast('Questão atualizada!', 'ok'); }
+    else           { await addDoc(collection(db,'questoes'), data);       showToast('Questão salva!', 'ok'); }
+    closeAddModal();
+  } catch(e) { showToast('Erro ao salvar: ' + e.message, 'error'); }
+};
+
+window.deleteQuestao = async () => {
+  if (!editingId || !confirm('Excluir esta questão?')) return;
+  try {
+    await deleteDoc(doc(db,'questoes',editingId));
+    closeAddModal();
+    showToast('Questão excluída', 'ok');
+  } catch(e) { showToast('Erro ao excluir', 'error'); }
+};
+
+// ── SIMULADO ─────────────────────────────────────────────────────
+function renderSimMaterias() {
+  const sel = document.getElementById('sim-materia');
+  const materias = [...new Set(questoes.map(q => q.materia).filter(Boolean))];
+  sel.innerHTML = '<option value="todas">Todas as matérias</option>' + materias.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+window.startSimulado = () => {
+  const materia = document.getElementById('sim-materia').value;
+  const qtd     = parseInt(document.getElementById('sim-qtd').value);
+  const tempoPQ = parseInt(document.getElementById('sim-tempo').value);
+  let pool = materia === 'todas' ? questoes : questoes.filter(q => q.materia === materia);
+  if (pool.length < 1) { showToast('Nenhuma questão disponível para essa configuração', 'error'); return; }
+  simulQuestoes  = shuffle(pool).slice(0, Math.min(qtd, pool.length));
+  simulRespostas = {};
+  simulCurrent   = 0;
+  simulMaxSec    = tempoPQ > 0 ? tempoPQ * simulQuestoes.length : 0;
+  simulSeconds   = simulMaxSec;
+  simulStartTime = Date.now();
+
+  document.getElementById('simul-config-view').style.display = 'none';
+  document.getElementById('simul-running-view').style.display = 'block';
+  document.getElementById('simul-result-view').style.display = 'none';
+
+  if (simulMaxSec > 0) {
+    clearInterval(simulTimer);
+    simulTimer = setInterval(() => {
+      simulSeconds--;
+      const el = document.getElementById('timer-display');
+      el.textContent = fmt2(simulSeconds);
+      el.className = 'timer-val' + (simulSeconds < 60 ? ' danger' : simulSeconds < 120 ? ' warn' : '');
+      if (simulSeconds <= 0) { clearInterval(simulTimer); endSimulado(); }
+    }, 1000);
+  } else {
+    document.getElementById('timer-display').textContent = '∞';
+  }
+  renderSimulQuestion();
+};
+
+function renderSimulQuestion() {
+  const q = simulQuestoes[simulCurrent];
+  const letras = ['A','B','C','D','E'];
+  const alts = letras.map(l => ({l, text: q['alt'+l]})).filter(a => a.text);
+  const resp = simulRespostas[q.id];
+  document.getElementById('simul-progress').textContent = `Questão ${simulCurrent+1} de ${simulQuestoes.length}`;
+  document.getElementById('sim-prev-btn').disabled = simulCurrent === 0;
+  document.getElementById('sim-next-btn').textContent = simulCurrent === simulQuestoes.length-1 ? 'Finalizar ✓' : 'Próxima →';
+  document.getElementById('simul-q-wrap').innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${simulCurrent+1}/${simulQuestoes.length} · ${q.materia||''} ${q.assunto?'· '+q.assunto:''}</div>
+      <div class="q-text">${q.enunciado}</div>
+    </div>
+    <div class="alts">
+      ${alts.map(a => `
+        <div class="alt ${resp === a.l ? 'selected' : ''}" id="simalt-${a.l}" onclick="selectSimAlt('${q.id}','${a.l}')">
+          <div class="alt-letter">${a.l}</div>
+          <div class="alt-text">${a.text}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+window.selectSimAlt = (qId, letra) => {
+  simulRespostas[qId] = letra;
+  document.querySelectorAll('[id^=simalt-]').forEach(el => {
+    el.classList.toggle('selected', el.id === 'simalt-'+letra);
+  });
+};
+
+window.simulNext = () => {
+  if (simulCurrent < simulQuestoes.length - 1) { simulCurrent++; renderSimulQuestion(); }
+  else endSimulado();
+};
+window.simulPrev = () => {
+  if (simulCurrent > 0) { simulCurrent--; renderSimulQuestion(); }
+};
+window.confirmEndSimulado = () => { if (confirm('Encerrar o simulado agora?')) endSimulado(); };
+
+async function endSimulado() {
+  clearInterval(simulTimer);
+  const elapsed = Math.round((Date.now() - simulStartTime) / 1000);
+  let acertos = 0;
+  simulQuestoes.forEach(q => { if (simulRespostas[q.id] === q.gabarito) acertos++; });
+  const total = simulQuestoes.length;
+  const pct   = Math.round(acertos/total*100);
+
+  document.getElementById('simul-running-view').style.display = 'none';
+  document.getElementById('simul-result-view').style.display = 'block';
+  document.getElementById('result-score').textContent = pct + '%';
+  document.getElementById('result-score').style.color = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('result-label').textContent = pct >= 70 ? '🏆 Excelente resultado!' : pct >= 50 ? '📈 Bom resultado, continue!' : '📚 Continue estudando!';
+  document.getElementById('res-acertos').textContent  = acertos;
+  document.getElementById('res-erros').textContent    = total - acertos;
+  document.getElementById('res-total').textContent    = total;
+  document.getElementById('res-tempo').textContent    = fmt2(elapsed);
+
+  // gabarito detalhado
+  document.getElementById('simul-gabarito-list').innerHTML = simulQuestoes.map((q,i) => {
+    const resp = simulRespostas[q.id] || '—';
+    const ok   = resp === q.gabarito;
+    return `<div class="recent-item" style="margin-bottom:8px">
+      <div class="ri-icon" style="background:${ok?'rgba(34,199,122,.15)':'rgba(240,82,82,.15)'};font-size:14px">${ok?'✅':'❌'}</div>
+      <div class="ri-info">
+        <div class="ri-name">${i+1}. ${q.enunciado.substring(0,50)}...</div>
+        <div class="ri-meta">Sua resposta: <b>${resp}</b> · Gabarito: <b style="color:var(--green)">${q.gabarito}</b></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // salvar simulado
+  if (currentUser) {
+    try {
+      await addDoc(collection(db,'simulados'), {
+        uid: currentUser.uid, data: new Date().toISOString(),
+        total, acertos, pct, tempoGasto: elapsed,
+        materia: document.getElementById('sim-materia').value,
+      });
+      loadSimHistory();
+    } catch(e) {}
+  }
+}
+
+function renderSimHistory() {
+  const el = document.getElementById('sim-history');
+  if (!simulHistory.length) { el.innerHTML = `<div class="empty-state"><div class="big">📋</div><p>Nenhum simulado realizado ainda.</p></div>`; return; }
+  el.innerHTML = simulHistory.slice(0,5).map(s => `
+    <div class="recent-item" style="margin-bottom:8px">
+      <div class="ri-icon" style="background:rgba(79,142,247,.15)">📝</div>
+      <div class="ri-info">
+        <div class="ri-name">${s.materia === 'todas' ? 'Todas as matérias' : s.materia} · ${s.total} questões</div>
+        <div class="ri-meta">${new Date(s.data).toLocaleDateString('pt-BR')} · Tempo: ${fmt2(s.tempoGasto||0)}</div>
+      </div>
+      <span class="ri-badge ${s.pct>=70?'rb-green':'rb-red'}">${s.pct}%</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
